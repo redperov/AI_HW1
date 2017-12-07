@@ -13,7 +13,7 @@ public class HW1 {
         String algorithmType;
         int    boardSize;
 
-        //Read file data.
+        //Read data from file.
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
             algorithmType = bufferedReader.readLine();
@@ -23,6 +23,7 @@ public class HW1 {
 
             //Read board lines.
             for (int row = 0; row < boardSize; row++) {
+
                 rowRead = bufferedReader.readLine();
 
                 //Fill next board line with values.
@@ -42,28 +43,31 @@ public class HW1 {
             e.printStackTrace();
         }
 
+        //TODO this is the way to invoke, add a switch case for the different algorithms
+        //Solution solution = searcher.search(searchable);
+
         //Write the solution into a file.
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                //TODO change path to output.txt
-                new FileOutputStream("C:\\Users\\Danny\\Desktop\\inputs\\output.txt"), "utf-8"))) {
-
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for (int i = 0; i < 5; i++){
-                stringBuilder.append(i);
-                stringBuilder.append('-');
-            }
-
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-
-            //Write string to file.
-            writer.write(stringBuilder.toString());
-            writer.close();
-
-        } catch (IOException e) {
-            System.out.println("Error: writing to file error.");
-            e.printStackTrace();
-        }
+//        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+//                //TODO change path to output.txt
+//                new FileOutputStream("C:\\Users\\Danny\\Desktop\\inputs\\output.txt"), "utf-8"))) {
+//
+//            StringBuilder stringBuilder = new StringBuilder();
+//
+//            for (int i = 0; i < 5; i++){
+//                stringBuilder.append(i);
+//                stringBuilder.append('-');
+//            }
+//
+//            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+//
+//            //Write string to file.
+//            writer.write(stringBuilder.toString());
+//            writer.close();
+//
+//        } catch (IOException e) {
+//            System.out.println("Error: writing to file error.");
+//            e.printStackTrace();
+//        }
 
     }
 }
