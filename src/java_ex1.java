@@ -4,7 +4,7 @@ import java.io.*;
  * The main class of the program.
  * It receives the user arguments and runs the algorithms.
  */
-public class HW1 {
+public class java_ex1 {
 
     public static void main(String[] args) {
 
