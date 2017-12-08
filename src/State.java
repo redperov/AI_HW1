@@ -5,7 +5,8 @@
 public class State<T> {
 
     private T     state;
-    private State cameFrom;
+    private int creationTime;
+    private State<T> cameFrom;
 
     /**
      * Constructor.
@@ -13,6 +14,8 @@ public class State<T> {
      */
     public State(T state) {
        this.state = state;
+       this.cameFrom = null;
+       this.creationTime = 0;
     }
 
     /**
@@ -24,10 +27,19 @@ public class State<T> {
     }
 
     /**
+     * Creation time getter.
+     * @return time
+     */
+    public int getCreationTime() {
+        return creationTime;
+    }
+
+
+    /**
      * Parent state setter.
      * @return parent state
      */
-    public State getCameFrom() {
+    public State<T> getCameFrom() {
         return cameFrom;
     }
 
@@ -37,6 +49,7 @@ public class State<T> {
      */
     public void setCameFrom(State cameFrom) {
         this.cameFrom = cameFrom;
+        this.creationTime = this.cameFrom.getCreationTime() + 1;
     }
 
     @Override

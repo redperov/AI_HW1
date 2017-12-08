@@ -7,13 +7,15 @@ import java.util.List;
  */
 public class Board implements Searchable<Position> {
 
-    private char[][]        board;
-    private int             boardSize;
-    private State<Position> initialState;
-    private State<Position> goalState;
+    private char[][]              board;
+    private int                   boardSize;
+    private State<Position>       initialState;
+    private State<Position>       goalState;
+    private List<State<Position>> neighbours;
 
     /**
      * Constructor.
+     *
      * @param boardSize board size
      */
     public Board(int boardSize) {
@@ -23,9 +25,9 @@ public class Board implements Searchable<Position> {
         this.board = new char[boardSize][boardSize];
 
         //Sets the initial and goal positions.
-        Position initialPosition = new Position(0, 0, this.board[0][0]);
+        Position initialPosition = new Position(0, 0, this.board[0][0], -1);
         Position goalPosition = new Position(this.boardSize - 1, this.boardSize - 1,
-                this.board[this.boardSize - 1][this.boardSize - 1]);
+                this.board[this.boardSize - 1][this.boardSize - 1], -1);
 
         //Sets the initial and goal states.
         this.initialState = new State<>(initialPosition);
@@ -54,13 +56,16 @@ public class Board implements Searchable<Position> {
     /**
      * Sets a value to a board cell.
      */
-    public void addState(State<Position> state) {
+    public void addValue(String value) {
 
-        int  x     = state.getState().getX();
-        int  y     = state.getState().getY();
-        char value = state.getState().getValue();
+        //Split the string to x y coordinates, and road type
+        String[] parts = value.split(" ");
+        int  x     = Integer.parseInt(parts[0]);
+        int  y     = Integer.parseInt(parts[1]);
+        char roadType = parts[2].charAt(0);
 
-        this.board[x][y] = value;
+        //Set value in the board.
+        this.board[x][y] = roadType;
     }
 
     @Override
@@ -70,85 +75,180 @@ public class Board implements Searchable<Position> {
     public List<State<Position>> getAllPossibleStates(State<Position> state) {
 
         //A list of all the cells neighbours.
-        List<State<Position>> neighbours = new ArrayList<>();
-        Position              neighbourPosition;
-        State<Position>       neighbourState;
-        int                   row          = state.getState().getX();
-        int                   column          = state.getState().getY();
+        this.neighbours = new ArrayList<>();
 
+        //The given state's coordinates.
+        int row    = state.getState().getX();
+        int column = state.getState().getY();
+
+        int neighbourRow;
+        int neighbourColumn;
+        int neighbourDirection;
+
+
+        //Check if cell has a right neighbour.
+        if (column < this.boardSize - 1) {
+
+            neighbourRow = row;
+            neighbourColumn = column + 1;
+            neighbourDirection = 0;
+
+            //Add neighbour to the list if it's legal.
+            addLegalNeighbour(neighbourRow, neighbourColumn, neighbourDirection);
+        }
 
         //Check if cell has a bottom-right neighbour.
         if (row < this.boardSize - 1 && column < this.boardSize - 1) {
 
-            char neighbourValue = this.board[row + 1][column + 1];
-            neighbourPosition = new Position(row + 1, column + 1, neighbourValue);
-            neighbourState = new State<>(neighbourPosition);
-            neighbours.add(neighbourState);
+            neighbourRow = row + 1;
+            neighbourColumn = column + 1;
+            neighbourDirection = 1;
+
+            //Add neighbour to the list if it's legal.
+            addLegalNeighbour(neighbourRow, neighbourColumn, neighbourDirection);
         }
 
         //Check if cell has a bottom neighbour.
-        if(row < this.boardSize - 1){
+        if (row < this.boardSize - 1) {
 
-            char neighbourValue = this.board[row + 1][column];
-            neighbourPosition = new Position(row + 1, column, neighbourValue);
-            neighbourState = new State<>(neighbourPosition);
-            neighbours.add(neighbourState);
+            neighbourRow = row + 1;
+            neighbourColumn = column;
+            neighbourDirection = 2;
+
+            //Add neighbour to the list if it's legal.
+            addLegalNeighbour(neighbourRow, neighbourColumn, neighbourDirection);
         }
 
         //Check if cell has a bottom-left neighbour.
-        if(row < this.boardSize - 1 && column > 0){
+        if (row < this.boardSize - 1 && column > 0) {
 
-            char neighbourValue = this.board[row + 1][column - 1];
-            neighbourPosition = new Position(row + 1, column - 1, neighbourValue);
-            neighbourState = new State<>(neighbourPosition);
-            neighbours.add(neighbourState);
+            neighbourRow = row + 1;
+            neighbourColumn = column - 1;
+            neighbourDirection = 3;
+
+            //Add neighbour to the list if it's legal.
+            addLegalNeighbour(neighbourRow, neighbourColumn, neighbourDirection);
         }
 
         //Check if cell has a left neighbour.
-        if(column > 0){
+        if (column > 0) {
 
-            char neighbourValue = this.board[row][column - 1];
-            neighbourPosition = new Position(row, column - 1, neighbourValue);
-            neighbourState = new State<>(neighbourPosition);
-            neighbours.add(neighbourState);
+            neighbourRow = row;
+            neighbourColumn = column - 1;
+            neighbourDirection = 4;
+
+            //Add neighbour to the list if it's legal.
+            addLegalNeighbour(neighbourRow, neighbourColumn, neighbourDirection);
         }
 
         //Check if cell has a top-left neighbour.
-        if(row > 0 && column > 0){
+        if (row > 0 && column > 0) {
 
-            char neighbourValue = this.board[row - 1][column - 1];
-            neighbourPosition = new Position(row - 1, column - 1, neighbourValue);
-            neighbourState = new State<>(neighbourPosition);
-            neighbours.add(neighbourState);
+            neighbourRow = row - 1;
+            neighbourColumn = column - 1;
+            neighbourDirection = 5;
+
+            //Add neighbour to the list if it's legal.
+            addLegalNeighbour(neighbourRow, neighbourColumn, neighbourDirection);
         }
 
         //Check if cell has a top neighbour.
-        if(row > 0){
+        if (row > 0) {
 
-            char neighbourValue = this.board[row - 1][column];
-            neighbourPosition = new Position(row - 1, column , neighbourValue);
-            neighbourState = new State<>(neighbourPosition);
-            neighbours.add(neighbourState);
+            neighbourRow = row - 1;
+            neighbourColumn = column;
+            neighbourDirection = 6;
+
+            //Add neighbour to the list if it's legal.
+            addLegalNeighbour(neighbourRow, neighbourColumn, neighbourDirection);
         }
 
         //Check if cell has a top-right neighbour.
-        if(row > 0 && column < this.boardSize - 1){
+        if (row > 0 && column < this.boardSize - 1) {
 
-            char neighbourValue = this.board[row - 1][column + 1];
-            neighbourPosition = new Position(row - 1, column + 1 , neighbourValue);
-            neighbourState = new State<>(neighbourPosition);
-            neighbours.add(neighbourState);
-        }
+            neighbourRow = row - 1;
+            neighbourColumn = column + 1;
+            neighbourDirection = 7;
 
-        //Check if cell has a right neighbour.
-        if(column < this.boardSize - 1){
-
-            char neighbourValue = this.board[row][column + 1];
-            neighbourPosition = new Position(row, column + 1 , neighbourValue);
-            neighbourState = new State<>(neighbourPosition);
-            neighbours.add(neighbourState);
+            //Add neighbour to the list if it's legal.
+            addLegalNeighbour(neighbourRow, neighbourColumn, neighbourDirection);
         }
 
         return neighbours;
+    }
+
+    /**
+     * Checks if the neighbour is legal.
+     *
+     * @param row               row
+     * @param column            column
+     * @param diagonalDirection if a diagonal neighbour: 1,3,5,7 else 0
+     * @return is legal
+     */
+    private boolean isLegalNeighbour(int row, int column, int diagonalDirection) {
+
+        //Check if the neighbour is a water road.
+        if (this.board[row][column] == 'W') {
+            return false;
+
+            //Check if the neighbour is a diagonal.
+        } else if (diagonalDirection != 0) {
+
+            //Check if one of the diagonal's neighbours is a water road.
+            switch (diagonalDirection) {
+
+                //If bottom-right.
+                case 1:
+                    if (this.board[row - 1][column] == 'W' || this.board[row][column - 1] == 'W') {
+                        return false;
+                    }
+                    break;
+
+                //If bottom-left.
+                case 3:
+                    if (this.board[row - 1][column] == 'W' || this.board[row][column + 1] == 'W') {
+                        return false;
+                    }
+                    break;
+
+                //If top-left.
+                case 5:
+                    if (this.board[row + 1][column] == 'W' || this.board[row][column + 1] == 'W') {
+                        return false;
+                    }
+                    break;
+
+                //If top-right.
+                case 7:
+                    if (this.board[row + 1][column] == 'W' || this.board[row][column - 1] == 'W') {
+                        return false;
+                    }
+                    break;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Adds a neighbour to the neighbours list if it's legal.
+     *
+     * @param neighbourRow       neighbour row
+     * @param neighbourColumn    neighbour column
+     * @param neighbourDirection neighbour direction
+     */
+    private void addLegalNeighbour(int neighbourRow, int neighbourColumn, int neighbourDirection) {
+
+        Position        neighbourPosition;
+        State<Position> neighbourState;
+        char            neighbourValue;
+        //Check if the neighbour is legal.
+        if (isLegalNeighbour(neighbourRow, neighbourColumn, neighbourDirection)) {
+
+            neighbourValue = this.board[neighbourRow][neighbourColumn];
+            neighbourPosition = new Position(neighbourRow, neighbourColumn, neighbourValue, neighbourDirection);
+            neighbourState = new State<>(neighbourPosition);
+            this.neighbours.add(neighbourState);
+        }
     }
 }

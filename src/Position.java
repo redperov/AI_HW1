@@ -8,6 +8,9 @@ public class Position {
     private int     y;
     private char    value;
     private int     cost;
+
+    //The direction from which the position came from.
+    private int  directionCameFrom;
     private boolean isLegal;
 
     /**
@@ -17,10 +20,11 @@ public class Position {
      * @param y     Y coordinate
      * @param value cell value
      */
-    public Position(int x, int y, char value) {
+    public Position(int x, int y, char value, int directionCameFrom ) {
         this.x = x;
         this.y = y;
         this.value = value;
+        this.directionCameFrom = directionCameFrom;
 
         this.isLegal = true;
 
@@ -84,6 +88,14 @@ public class Position {
     }
 
     /**
+     * Direction came from getter.
+     * @return direction: 0 - right, 1 - bottom-right, 2 - bottom, ..., 7 - top-right
+     */
+    public int getDirectionCameFrom() {
+        return directionCameFrom;
+    }
+
+    /**
      * Is a legal road getter.
      *
      * @return boolean
@@ -94,13 +106,51 @@ public class Position {
 
     @Override
     /**
-     * Checks if the (x,y) coordinates and the value are equal to the ones of the given position.
+     * Checks if the (x,y) coordinates are equal to the ones of the given position.
      */
     public boolean equals(Object obj) {
 
         Position otherPosition = (Position) obj;
 
-        return (this.getX() == otherPosition.getX()) && (this.getY() == otherPosition.getY()
-                && (this.getValue() == otherPosition.getValue()));
+        return (this.getX() == otherPosition.getX()) && (this.getY() == otherPosition.getY());
+    }
+
+    @Override
+    /**
+     * Returns the string representation of the position's direction.
+     */
+    public String toString() {
+
+        //If the position is the initial or goal state.
+       if(this.value == 'S'){
+           return "S";
+       }
+
+//       if(this.value == 'G'){
+//           return "G";
+//       }
+
+        //For each direction number return the string representation of it.
+        switch (this.directionCameFrom){
+
+            case 0:
+                return "R";
+            case 1:
+                return "RD";
+            case 2:
+                return "D";
+            case 3:
+                return "LD";
+            case 4:
+                return "L";
+            case 5:
+                return "LU";
+            case 6:
+                return "U";
+            case 7:
+                return "RU";
+        }
+
+        return "";
     }
 }

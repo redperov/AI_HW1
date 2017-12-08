@@ -3,5 +3,6 @@
  */
 public interface Sorter {
 
+    //TODO delete if not needed
     //void sort(Nodes[] array, Comparator comparator);
 }

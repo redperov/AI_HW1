@@ -19,10 +19,10 @@ public interface Searchable<T> {
     State<T> getGoalState();
 
     /**
-     * Adds a new state.
-     * @param state new state
+     * Adds a value in the structure.
+     * @param value value
      */
-    void addState(State<T> state);
+    void addValue(String value);
 
     /**
      * Returns a list of all the possible states from a given state.

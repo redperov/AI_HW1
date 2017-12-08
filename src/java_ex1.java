@@ -8,17 +8,19 @@ public class java_ex1 {
 
     public static void main(String[] args) {
 
-        String filePath = args[0];
-        char[][] board;
-        String algorithmType;
-        int    boardSize;
+        String               filePath      = args[0];
+        Searchable<Position> searchable    = null;
+        Searcher<Position>   searcher      = null;
+        Solution             solution      = null;
+        String               algorithmType = "";
+        int                  boardSize     = 0;
 
         //Read data from file.
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
             algorithmType = bufferedReader.readLine();
             boardSize = Integer.parseInt(bufferedReader.readLine());
-            board = new char[boardSize][boardSize];
+            searchable = new Board(boardSize);
             String rowRead;
 
             //Read board lines.
@@ -27,9 +29,16 @@ public class java_ex1 {
                 rowRead = bufferedReader.readLine();
 
                 //Fill next board line with values.
-                for(int column = 0; column < boardSize; column++){
+                for (int column = 0; column < boardSize; column++) {
 
-                    board[row][column] = rowRead.charAt(column);
+                    //Create the string for the board.
+                    String value = Integer.toString(row) + " " + Integer.toString(column) + " " +
+                            rowRead.charAt(column);
+
+                    //Sets the road type in location (x,y) at the board.
+                    //NOTE: this is not used to create a State or the game world in advance,
+                    // it just sets values in the matrix, which will be used to create states.
+                    searchable.addValue(value);
                 }
             }
 
@@ -43,7 +52,20 @@ public class java_ex1 {
             e.printStackTrace();
         }
 
-        //TODO this is the way to invoke, add a switch case for the different algorithms
+
+        switch (algorithmType) {
+
+            case "IDS":
+                searcher = new IDSSearcher(boardSize * boardSize);
+                solution = searcher.search(searchable);
+                break;
+            case "A*":
+                //TODO implement
+            default:
+                break;
+        }
+
+        System.out.println(solution.toString());
         //Solution solution = searcher.search(searchable);
 
         //Write the solution into a file.

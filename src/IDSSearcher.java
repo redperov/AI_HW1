@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * The class implements the IDSSearcher algorithm.
@@ -9,7 +8,12 @@ public class IDSSearcher implements Searcher<Position> {
 
     //List used for Duplicate Pruning.
     private ArrayList<State<Position>> duplicatePruning;
-    Searchable<Position> searchable;
+
+    //The board that is used for searching.
+    private Searchable<Position> searchable;
+
+    //IDS comparator.
+    private Comparator<State<Position>> comparator;
 
     //Algorithm bound.
     private int bound;
@@ -21,11 +25,12 @@ public class IDSSearcher implements Searcher<Position> {
     public IDSSearcher(int bound) { //TODO maybe make bound to be provided by the searchable
 
         this.bound = bound;
+        this.comparator = new IDSComparator();
     }
 
     @Override
     /**
-     * Performs an IDSSearcher search.
+     * Performs an IDS search.
      */
     public Solution search(Searchable<Position> searchable) {
 
@@ -39,9 +44,9 @@ public class IDSSearcher implements Searcher<Position> {
         //Run the IDS search.
         State<Position> node = IDS(root);
 
-        //TODO generate solution
+        Solution solution = new Solution(node);
 
-        return null;
+        return solution;
     }
 
     private State<Position> IDS(State<Position> root){
@@ -61,6 +66,12 @@ public class IDSSearcher implements Searcher<Position> {
         return null;
     }
 
+    /**
+     * Performs a limited depth DFS search.
+     * @param node node
+     * @param depth depth
+     * @return node
+     */
     private State<Position> DLS(State<Position> node, int depth){
 
         //Check if goal state was found.
@@ -72,7 +83,11 @@ public class IDSSearcher implements Searcher<Position> {
         if(depth > 0){
 
             //Get all the node's neighbours.
+            //TODO this might not work, because in each iteration I forget the neighbours, and maybe should use a stack instead
             List<State<Position>> neighbours = this.searchable.getAllPossibleStates(node);
+
+            //Sort the nodes according to the IDS comparator.
+            neighbours.sort(this.comparator);
 
             //Run over all the neighbours.
             for(State<Position> neighbour : neighbours){
@@ -82,6 +97,9 @@ public class IDSSearcher implements Searcher<Position> {
 
                     //Add neighbour to Duplicate Pruning.
                     this.duplicatePruning.add(neighbour);
+
+                    //Set where the neighbour came from.
+                    neighbour.setCameFrom(node);
 
                     //Call DLS on neighbour.
                     State<Position> found = DLS(neighbour, depth - 1);
