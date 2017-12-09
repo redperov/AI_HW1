@@ -4,7 +4,7 @@ import java.util.*;
  * The interface is used to compare between to IDS states.
  * It decision is made according to the creation time and the direction the state came from.
  */
-public class IDSComparator implements java.util.Comparator<State<Position>> {
+public class IDSComparator implements Comparator<State<Position>> {
 
     @Override
     /**
@@ -18,6 +18,7 @@ public class IDSComparator implements java.util.Comparator<State<Position>> {
         } else if (s2.getCreationTime() < s1.getCreationTime()) {
             return 1;
         } else {
+
             //Check which one came from the highest priority direction.
             if (s1.getState().getDirectionCameFrom() < s2.getState().getDirectionCameFrom()) {
                 return -1;

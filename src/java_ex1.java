@@ -2,13 +2,13 @@ import java.io.*;
 
 /**
  * The main class of the program.
- * It receives the user arguments and runs the algorithms.
+ * It performs the requested search according to the input in the file.
  */
 public class java_ex1 {
 
     public static void main(String[] args) {
-
-        String               filePath      = args[0];
+        final String inputFilePath = "input.txt";
+        final String outputFilePath = "output.txt";
         Searchable<Position> searchable    = null;
         Searcher<Position>   searcher      = null;
         Solution             solution      = null;
@@ -17,7 +17,7 @@ public class java_ex1 {
 
         //Read data from file.
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFilePath));
             algorithmType = bufferedReader.readLine();
             boardSize = Integer.parseInt(bufferedReader.readLine());
             searchable = new Board(boardSize);
@@ -57,39 +57,34 @@ public class java_ex1 {
 
             case "IDS":
                 searcher = new IDSSearcher(boardSize * boardSize);
-                solution = searcher.search(searchable);
                 break;
             case "A*":
-                //TODO implement
+                searcher = new AStarSearcher(10 * boardSize * boardSize);
+                break;
             default:
                 break;
         }
 
-        System.out.println(solution.toString());
-        //Solution solution = searcher.search(searchable);
+        //Perform the requested search.
+        solution = searcher.search(searchable);
 
         //Write the solution into a file.
-//        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-//                //TODO change path to output.txt
-//                new FileOutputStream("C:\\Users\\Danny\\Desktop\\inputs\\output.txt"), "utf-8"))) {
-//
-//            StringBuilder stringBuilder = new StringBuilder();
-//
-//            for (int i = 0; i < 5; i++){
-//                stringBuilder.append(i);
-//                stringBuilder.append('-');
-//            }
-//
-//            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-//
-//            //Write string to file.
-//            writer.write(stringBuilder.toString());
-//            writer.close();
-//
-//        } catch (IOException e) {
-//            System.out.println("Error: writing to file error.");
-//            e.printStackTrace();
-//        }
+        writeSolutionToFile(solution.toString(), outputFilePath);
+    }
+
+    public static void writeSolutionToFile(String solution, String filePath) {
+
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(filePath), "utf-8"))) {
+
+            //Write string to file.
+            writer.write(solution);
+            writer.close();
+
+        } catch (IOException e) {
+            System.out.println("Error: writing to file error.");
+            e.printStackTrace();
+        }
 
     }
 }

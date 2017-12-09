@@ -1,7 +1,7 @@
 import java.util.*;
 
 /**
- * The class implements the IDSSearcher algorithm.
+ * The class implements the IDS algorithm.
  * It uses the DFS algorithm with Duplicate Pruning.
  */
 public class IDSSearcher implements Searcher<Position> {
@@ -30,7 +30,7 @@ public class IDSSearcher implements Searcher<Position> {
 
     @Override
     /**
-     * Performs an IDS search.
+     * Finds a solution using IDS.
      */
     public Solution search(Searchable<Position> searchable) {
 
@@ -44,11 +44,14 @@ public class IDSSearcher implements Searcher<Position> {
         //Run the IDS search.
         State<Position> node = IDS(root);
 
-        Solution solution = new Solution(node);
-
-        return solution;
+        return new Solution(node);
     }
 
+    /**
+     * Performs and IDS search.
+     * @param root root node
+     * @return goal state
+     */
     private State<Position> IDS(State<Position> root){
 
         State<Position> found;
