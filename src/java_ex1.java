@@ -2,28 +2,48 @@ import java.io.*;
 
 /**
  * The main class of the program.
- * It performs the requested search according to the input in the file.
+ * It performs the requested search according to the input in the text file.
  */
 public class java_ex1 {
 
     public static void main(String[] args) {
+
+        //Input file path.
         final String inputFilePath = "input.txt";
+
+        //Output file path.
         final String outputFilePath = "output.txt";
-        Searchable<Position> searchable    = null;
-        Searcher<Position>   searcher      = null;
-        Solution             solution      = null;
-        String               algorithmType = "";
-        int                  boardSize     = 0;
+
+        //Searchable interface.
+        Searchable<Position> searchable = null;
+
+        //Searcher interface.
+        Searcher<Position> searcher = null;
+
+        //Stores the solution.
+        Solution solution = null;
+
+        //Algorithm type.
+        String algorithmType = "";
+
+        //Board size.
+        int boardSize = 0;
 
         //Read data from file.
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFilePath));
+
+            //The first line holds the algorithm type.
             algorithmType = bufferedReader.readLine();
+
+            //The second line holds the board size.
             boardSize = Integer.parseInt(bufferedReader.readLine());
+
+            //Create a new searchable object.
             searchable = new Board(boardSize);
             String rowRead;
 
-            //Read board lines.
+            //Read lines containing board values..
             for (int row = 0; row < boardSize; row++) {
 
                 rowRead = bufferedReader.readLine();
@@ -53,14 +73,19 @@ public class java_ex1 {
         }
 
 
+        //Create the searcher algorithm according to the file input.
         switch (algorithmType) {
 
+            //IDS algorithm.
             case "IDS":
                 searcher = new IDSSearcher(boardSize * boardSize);
                 break;
+
+            //A* algorithm.
             case "A*":
                 searcher = new AStarSearcher(10 * boardSize * boardSize);
                 break;
+
             default:
                 break;
         }
@@ -72,6 +97,12 @@ public class java_ex1 {
         writeSolutionToFile(solution.toString(), outputFilePath);
     }
 
+    /**
+     * Writes the search solution into a text file.
+     *
+     * @param solution solution's string representation.
+     * @param filePath output file path
+     */
     public static void writeSolutionToFile(String solution, String filePath) {
 
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(

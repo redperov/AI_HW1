@@ -4,8 +4,16 @@
  */
 public class State<T> {
 
+    //The actual state.
     private T     state;
-    private int creationTime;
+
+    //Counter used to set the creation time for all the states.
+    private static int timer = 0;
+
+    //State creation time.
+    private  int creationTime;
+
+    //The previous state.
     private State<T> cameFrom;
 
     /**
@@ -13,6 +21,7 @@ public class State<T> {
      * @param state Generic state.
      */
     public State(T state) {
+
        this.state = state;
        this.cameFrom = null;
        this.creationTime = 0;
@@ -24,6 +33,13 @@ public class State<T> {
      */
     public T getState() {
         return state;
+    }
+
+    /**
+     * Increases the timer.
+     */
+    public static void increaseTimer(){
+        timer++;
     }
 
     /**
@@ -47,14 +63,14 @@ public class State<T> {
      * Parent state setter.
      * @param cameFrom parent state
      */
-    public void setCameFrom(State cameFrom) {
+    public void setCameFrom(State<T> cameFrom) {
         this.cameFrom = cameFrom;
-        this.creationTime = this.cameFrom.getCreationTime() + 1;
+        this.creationTime = timer;
     }
 
     @Override
     /**
-     * Overrides the equals method, to compare between two states according to their X and Y coordinates.
+     * Overrides the equals method to compare between two states according to their X and Y coordinates.
      */
     public boolean equals(Object obj) {
 

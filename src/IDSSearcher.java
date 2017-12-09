@@ -20,6 +20,7 @@ public class IDSSearcher implements Searcher<Position> {
 
     /**
      * Constructor
+     *
      * @param bound algorithm bound
      */
     public IDSSearcher(int bound) { //TODO maybe make bound to be provided by the searchable
@@ -49,19 +50,21 @@ public class IDSSearcher implements Searcher<Position> {
 
     /**
      * Performs and IDS search.
+     *
      * @param root root node
      * @return goal state
      */
-    private State<Position> IDS(State<Position> root){
+    private State<Position> IDS(State<Position> root) {
 
         State<Position> found;
 
-        //Increase depth for each unsuccessful DLS search.
-        for(int depth = 0; depth < this.bound; depth++){
+        //Increase depth for each unsuccessful DLS search up to a given bound.
+        for (int depth = 0; depth < this.bound; depth++) {
 
+            //Run DFS with limited depth.
             found = DLS(root, depth);
 
-            if(found != null){
+            if (found != null) {
                 return found;
             }
         }
@@ -71,32 +74,34 @@ public class IDSSearcher implements Searcher<Position> {
 
     /**
      * Performs a limited depth DFS search.
-     * @param node node
+     *
+     * @param node  node
      * @param depth depth
      * @return node
      */
-    private State<Position> DLS(State<Position> node, int depth){
+    private State<Position> DLS(State<Position> node, int depth) {
 
         //Check if goal state was found.
-        if(depth == 0 && node.equals(searchable.getGoalState())){
+        if (depth == 0 && node.equals(searchable.getGoalState())) {
 
             return node;
         }
 
-        if(depth > 0){
+        if (depth > 0) {
 
             //Get all the node's neighbours.
-            //TODO this might not work, because in each iteration I forget the neighbours, and maybe should use a stack instead
+            //TODO this might not work, because in each iteration I forget the neighbours, and maybe should use a
+            // stack instead
             List<State<Position>> neighbours = this.searchable.getAllPossibleStates(node);
 
             //Sort the nodes according to the IDS comparator.
             neighbours.sort(this.comparator);
 
             //Run over all the neighbours.
-            for(State<Position> neighbour : neighbours){
+            for (State<Position> neighbour : neighbours) {
 
                 //Check if neighbour exists in the Duplicate Pruning.
-                if(!this.duplicatePruning.contains(neighbour)){
+                if (!this.duplicatePruning.contains(neighbour)) {
 
                     //Add neighbour to Duplicate Pruning.
                     this.duplicatePruning.add(neighbour);
@@ -110,7 +115,7 @@ public class IDSSearcher implements Searcher<Position> {
                     //Remove neighbour from Duplicate Pruning.
                     this.duplicatePruning.remove(neighbour);
 
-                    if(found != null){
+                    if (found != null) {
                         return found;
                     }
                 }

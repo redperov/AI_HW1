@@ -4,15 +4,20 @@
  */
 public class Heuristics {
 
-    private Heuristics(){}
+    /**
+     * Private constructor.
+     */
+    private Heuristics() {
+    }
 
     /**
-     * Calculates aerial distance.
+     * Calculates aerial distance between to positions.
+     *
      * @param current current position
-     * @param goal goal position
+     * @param goal    goal position
      * @return aerial distance
      */
-    public static int aStarHeuristicCostEstimate(Position current, Position goal){
+    public static int aStarHeuristicCostEstimate(Position current, Position goal) {
 
         return Math.max(Math.abs(goal.getX() - current.getX()), Math.abs(goal.getY() - current.getY()));
     }

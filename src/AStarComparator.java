@@ -1,8 +1,8 @@
 import java.util.Comparator;
 
 /**
- * The interface is used to compare between to A* states.
- * It decision is made according to the cost, creation time and the direction the state came from.
+ * The interface is used to compare between two A* states.
+ * It decision is made according to the f(n), creation time and the direction the state came from.
  */
 public class AStarComparator implements Comparator<AStarState<Position>> {
 
@@ -12,8 +12,7 @@ public class AStarComparator implements Comparator<AStarState<Position>> {
      */
     public int compare(AStarState<Position> s1, AStarState<Position> s2) {
 
-        //Check which one has the lowest cost.
-        //TODO change compare to f
+        //Check which one has the lowest f(n).
         if (s1.getF() < s2.getF()) {
             return -1;
         } else if (s2.getF() < s1.getF()) {

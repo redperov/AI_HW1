@@ -1,7 +1,7 @@
 import java.util.*;
 
 /**
- * The interface is used to compare between to IDS states.
+ * The interface is used to compare between two IDS states.
  * It decision is made according to the creation time and the direction the state came from.
  */
 public class IDSComparator implements Comparator<State<Position>> {
@@ -24,7 +24,7 @@ public class IDSComparator implements Comparator<State<Position>> {
                 return -1;
             } else if (s2.getState().getDirectionCameFrom() < s1.getState().getDirectionCameFrom()) {
                 return 1;
-            } else { //TODO is that ok that there might be two nodes with the same priority?
+            } else {
                 return 0;
             }
         }

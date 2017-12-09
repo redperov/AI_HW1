@@ -7,10 +7,19 @@ import java.util.List;
  */
 public class Board implements Searchable<Position> {
 
-    private char[][]              board;
-    private int                   boardSize;
-    private State<Position>       initialState;
-    private State<Position>       goalState;
+    //Char matrix which represents the board.
+    private char[][] board;
+
+    //Board size.
+    private int boardSize;
+
+    //Initial state.
+    private State<Position> initialState;
+
+    //Goal state.
+    private State<Position> goalState;
+
+    //Neighbours list.
     private List<State<Position>> neighbours;
 
     /**
@@ -59,10 +68,10 @@ public class Board implements Searchable<Position> {
     public void addValue(String value) {
 
         //Split the string to x y coordinates, and road type
-        String[] parts = value.split(" ");
-        int  x     = Integer.parseInt(parts[0]);
-        int  y     = Integer.parseInt(parts[1]);
-        char roadType = parts[2].charAt(0);
+        String[] parts    = value.split(" ");
+        int      x        = Integer.parseInt(parts[0]);
+        int      y        = Integer.parseInt(parts[1]);
+        char     roadType = parts[2].charAt(0);
 
         //Set value in the board.
         this.board[x][y] = roadType;
@@ -85,6 +94,8 @@ public class Board implements Searchable<Position> {
         int neighbourColumn;
         int neighbourDirection;
 
+        //Increments creation time by 1.
+        State.increaseTimer();
 
         //Check if cell has a right neighbour.
         if (column < this.boardSize - 1) {
@@ -242,12 +253,16 @@ public class Board implements Searchable<Position> {
         Position        neighbourPosition;
         State<Position> neighbourState;
         char            neighbourValue;
+
         //Check if the neighbour is legal.
         if (isLegalNeighbour(neighbourRow, neighbourColumn, neighbourDirection)) {
 
+            //Get board value.
             neighbourValue = this.board[neighbourRow][neighbourColumn];
             neighbourPosition = new Position(neighbourRow, neighbourColumn, neighbourValue, neighbourDirection);
             neighbourState = new State<>(neighbourPosition);
+
+            //Add neighbour to the neighbours list.
             this.neighbours.add(neighbourState);
         }
     }

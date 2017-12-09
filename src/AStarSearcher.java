@@ -5,7 +5,7 @@ import java.util.PriorityQueue;
 
 /**
  * The class implements the A* algorithm.
- * TODO add more description
+ * It uses a heuristic function of an aerial distance.
  */
 public class AStarSearcher implements Searcher<Position> {
 
@@ -18,6 +18,7 @@ public class AStarSearcher implements Searcher<Position> {
     //A* comparator.
     private Comparator<AStarState<Position>> comparator;
 
+    //Goal state.
     private State<Position> goalState;
 
     //Algorithm bound.
@@ -63,10 +64,17 @@ public class AStarSearcher implements Searcher<Position> {
      */
     private AStarState<Position> AStar(AStarState<Position> startNode, AStarState<Position> goalNode) {
 
-        List<State<Position>>      tempList;
+        //Temporary list to hold result from the searchable.
+        List<State<Position>> tempList;
+
+        //List of neighbours.
         List<AStarState<Position>> neighbours;
-        AStarState<Position>       node;
-        int                        boundChecker = 0;
+
+        //The node that is used in each iteration.
+        AStarState<Position> node;
+
+        //Counter that checks that the algorithm doesn't run forever.
+        int boundChecker = 0;
 
         this.openList = new PriorityQueue<>(comparator);
         this.openList.add(startNode);
@@ -89,7 +97,8 @@ public class AStarSearcher implements Searcher<Position> {
 
             for (AStarState<Position> neighbour : neighbours) {
 
-                if(this.openList.contains(neighbour)){
+                //Check if node is already in the opened list.
+                if (this.openList.contains(neighbour)) {
                     continue;
                 }
                 //Set new g(n) value.
@@ -115,6 +124,12 @@ public class AStarSearcher implements Searcher<Position> {
         return null;
     }
 
+    /**
+     * Parses a State into and A* state.
+     *
+     * @param state state
+     * @return A* state
+     */
     private AStarState<Position> parseToAStar(State<Position> state) {
 
         int g = state.getState().getCost();
@@ -123,6 +138,12 @@ public class AStarSearcher implements Searcher<Position> {
         return new AStarState<>(state.getState(), g, h);
     }
 
+    /**
+     * Parses a state list into an A* state list.
+     *
+     * @param tempList state list
+     * @return A* state list
+     */
     private List<AStarState<Position>> parseToAStarList(List<State<Position>> tempList) {
 
         List<AStarState<Position>> aStarStateList = new ArrayList<>();
